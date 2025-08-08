@@ -1,0 +1,10 @@
+# config.py
+import os
+from dotenv import load_dotenv
+
+# Load variables from .env at project start-up
+load_dotenv()
+
+class Config:
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
+    SQLALCHEMY_TRACK_MODIFICATIONS = False  # silence FSADeprecationWarning

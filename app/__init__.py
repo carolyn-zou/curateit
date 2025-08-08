@@ -1,12 +1,24 @@
 # app/__init__.py
 from flask import Flask, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from config import Config
 
-app = Flask(__name__)
+db = SQLAlchemy()
+migrate = Migrate()
 
-@app.route("/")
-def index():
-    """
-    Health-check endpoint.
-    Recruiters (and Render) can hit `/` to verify the API is live.
-    """
-    return jsonify(message="CurateIt API is running"), 200
+def create_app():
+    """Application factory pattern—it helps with testing later."""
+    app = Flask(__name__)
+    app.config.from_object(Config)
+
+    # Initialize extensions
+    db.init_app(app)
+    migrate.init_app(app, db)
+
+    # Health-check route
+    @app.route("/")
+    def index():
+        return jsonify(message="CurateIt API is running"), 200
+
+    return app
